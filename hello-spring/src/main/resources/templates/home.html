@@ -1,0 +1,126 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	<div class="container">
+		<div>
+			<h1>Hello Spring</h1>
+			<p>회원 기능</p>
+			<p>
+				<a href="/members/new">회원 가입</a>
+				<a href="/members">회원 목록</a>
+			</p>
+		</div>
+	</div> 
+	
+	<ul>
+		<li onclick="kakaoLogin();">
+	      <a href="javascript:void(0)">
+	          <span>카카오 로그인</span>
+	      </a>
+		</li>
+		<li onclick="kakaoLogout();">
+	      <a href="javascript:void(0)">
+	          <span>카카오 로그아웃</span>
+	      </a>
+		</li>
+	</ul>
+	<!-- 카카오 스크립트 -->
+	<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+	<script>
+	Kakao.init('5172eb52bf87a6954838f404dc90c533'); //발급받은 키 중 javascript키를 사용해준다.
+	console.log(Kakao.isInitialized()); // sdk초기화여부판단
+	//카카오로그인
+	function kakaoLogin() {
+	    Kakao.Auth.login({
+	      success: function (response) {
+	        Kakao.API.request({
+	          url: '/v2/user/me',
+	          success: function (response) {
+	        	  console.log(response)
+	          },
+	          fail: function (error) {
+	            console.log(error)
+	          },
+	        })
+	      },
+	      fail: function (error) {
+	        console.log(error)
+	      },
+	    })
+	  }
+	//카카오로그아웃  
+	function kakaoLogout() {
+	    if (Kakao.Auth.getAccessToken()) {
+	      Kakao.API.request({
+	        url: '/v1/user/unlink',
+	        success: function (response) {
+	        	console.log(response)
+	        },
+	        fail: function (error) {
+	          console.log(error)
+	        },
+	      })
+	      Kakao.Auth.setAccessToken(undefined)
+	    }
+	  }  
+	</script>
+	
+	<!-- /container -->
+	<div id="map" style="width:500px;height:400px;"></div>
+	<!-- services와 clusterer, drawing 라이브러리 불러오기 -->
+	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=5172eb52bf87a6954838f404dc90c533&libraries=services,clusterer,drawing"></script>
+	<script>
+		var container = document.getElementById('map');
+		var options = {
+			center: new kakao.maps.LatLng(33.450701, 126.570667),
+			level: 3
+		};
+
+		var map = new kakao.maps.Map(container, options);
+	</script>
+	
+	<div id="map1" style="width:500px;height:400px;"></div>
+	<script>
+	var mapContainer = document.getElementById('map1'), // 지도를 표시할 div 
+	    mapOption = { 
+	        center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+	        level: 3 // 지도의 확대 레벨
+	    };
+	 
+	var map1 = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+	 
+	// 일반 지도와 스카이뷰로 지도 타입을 전환할 수 있는 지도타입 컨트롤을 생성합니다
+	var mapTypeControl = new kakao.maps.MapTypeControl();
+	 
+	// 지도에 컨트롤을 추가해야 지도위에 표시됩니다
+	// kakao.maps.ControlPosition은 컨트롤이 표시될 위치를 정의하는데 TOPRIGHT는 오른쪽 위를 의미합니다
+	map1.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
+	 
+	// 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
+	var zoomControl = new kakao.maps.ZoomControl();
+	map1.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+	</script>
+	
+	<div id="map2" style="width:500px;height:400px;"></div>
+	<script>
+	    var mapContainer2 = document.getElementById('map2'), // 지도를 표시할 div 
+	        mapOption2 = {
+	            center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+	            level: 3 // 지도의 확대 레벨
+	        };
+	 
+	    var map2 = new kakao.maps.Map(mapContainer2, mapOption2); // 지도를 생성합니다
+	 
+	    // 마커가 표시될 위치입니다 
+	    var markerPosition = new kakao.maps.LatLng(33.450701, 126.570667);
+	 
+	    // 마커를 생성합니다
+	    var marker = new kakao.maps.Marker({
+	        position: markerPosition
+	    });
+	 
+	    // 마커가 지도 위에 표시되도록 설정합니다
+	    marker.setMap(map2);
+	</script>
+</body>
+</html>
